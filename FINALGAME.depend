@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1588428991 source:/home/ccap/Desktop/FINALGAME/main.c
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<time.h>
+	"main.h"
+	"status.h"
+
+1588428256 /home/ccap/Desktop/FINALGAME/main.h
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<time.h>
+	<SDL2/SDL_ttf.h>
+
+1588428114 /home/ccap/Desktop/FINALGAME/status.h
+
+1588428114 source:/home/ccap/Desktop/FINALGAME/status.c
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<time.h>
+	"main.h"
+
