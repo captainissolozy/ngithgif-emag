@@ -142,13 +142,25 @@ void loadGame(GameState *game)
     surface = IMG_Load("strike2.png");
     game->manFrames[39] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
-    surface = IMG_Load("strike4.png");
+    surface = IMG_Load("strike5.png");
     game->manFrames[40] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
-    surface = IMG_Load("strike5.png");
+    surface = IMG_Load("strike4.png");
     game->manFrames[41] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("dead1.png");
+    game->manFrames[42] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("dead2.png");
+    game->manFrames[43] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("dead3.png");
+    game->manFrames[44] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("dead4.png");
+    game->manFrames[45] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
 
 
 
@@ -215,6 +227,17 @@ void loadGame(GameState *game)
     game->brick = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    //load fonts
+    game->font = TTF_OpenFont("OpenSans-Bold.ttf", 96);
+    if(!game->font)
+    {
+        printf("can't find font you dumbass");
+        SDL_Quit();
+        exit(1);
+    }
+
+    game->label = NULL;
+
     game->man.x = 320-40;
     game->man.y = 240-40;
     game->man.dx = 0;
@@ -224,6 +247,12 @@ void loadGame(GameState *game)
     game->man.facingLeft = 1;
     game->birds.enemyFrame = 0;
     game->man.action = 0;
+    game->man.lives = 8;
+    game->man.isDead = 0;
+    game->statusState = STATUS_STATE_LIVES;
+    game->countani = 0;
+
+    init_status_lives(game);
 
     game->time = 0;
 
@@ -243,31 +272,35 @@ void loadGame(GameState *game)
     game->ledges[0].x = -50;
     game->ledges[0].y = 600;
 
-    game->ledges[1].w = 432;
-    game->ledges[1].h = 60;
-    game->ledges[1].x = 1100;
-    game->ledges[1].y = 200;
-
     game->ledges[2].w = 432;
     game->ledges[2].h = 70;
     game->ledges[2].x = -60;
     game->ledges[2].y = 280;
 
-    game->ledges[3].w = 232;
-    game->ledges[3].h = 60;
-    game->ledges[3].x = 410;
-    game->ledges[3].y = 20;
 
 }
 void process(GameState *game)
 {
     game->time++;
+    int check = 0;
+
+    if(game->time > 1000 && check == 0)
+    {
+        shutdown_status_lives(game);
+        game->statusState = STATUS_STATE_GAME;
+        game->time = 0;
+        check = 1;
+    }
+
+    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 800)
+    {
     Man *man = &game->man;
     Bird *birds = &game->birds;
     man->x += man->dx;
     man->y += man->dy;
 
     man->dy += GRAVITY;
+
     if(man->dx == 0 && man->action == 1)
     {
         if(game->time %50 == 0)
@@ -562,10 +595,47 @@ void process(GameState *game)
             birds->enemyFrame = 0;
         }
     }
+    }else if(game->man.isDead >= 800 && game->countani == 0)
+    {
+        Man *man = &game->man;
+        man->x += man->dx;
+        if(game->time %50 == 0)
+        {
+            if(man->animFrame == 42)
+            {
+                man->animFrame = 43;
+                man->dx = -3;
+            }
+            else if(man->animFrame == 43)
+            {
+                man->animFrame = 44;
+            }
+            else if(man->animFrame == 44)
+            {
+                man->animFrame = 45;
+                game->countani = 1;
+            }
+            else
+            {
+                man->animFrame = 42;
+            }
+
+        }
+    }
+}
+
+int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2)
+{
+    return (!((x1  > (x2+wt2)) || (x2 > (x1+wt1)) || (y1 > (y2+ht2)) || (y2 > (y1+ht1))));
 }
 
 void collisionDetect(GameState *game)
 {
+    //ifrit collision
+    if(collide2d(game->man.x, game->man.y, game->birds.x, game->birds.y, 41, 181, 101, 210))
+    {
+        game->man.isDead++;
+    }
     //ledge collision
     for(int i =0; i < 4; i++)
     {
@@ -649,7 +719,7 @@ int processEvent(SDL_Window *window, GameState *game)
                 case SDLK_UP:
                     if(game->man.onLedge)
                     {
-                        game->man.dy = -3;
+                        game->man.dy = -4;
                         game->man.onLedge = 0;
                     }
                 break;
@@ -721,7 +791,11 @@ int processEvent(SDL_Window *window, GameState *game)
 }
 void doRender(SDL_Renderer *renderer, GameState *game)
 {
-
+    if(game->statusState == STATUS_STATE_LIVES)
+    {
+        draw_status_lives(game);
+    }else if(game->statusState == STATUS_STATE_GAME)
+    {
     SDL_RenderClear(renderer);
     //bacgGround
     SDL_Rect bgRect = {0, 0, 1440, 720};
@@ -734,12 +808,8 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     //ledge
     SDL_Rect ledgerect = {game->ledges[0].x, game->ledges[0].y, game->ledges[0].w, game->ledges[0].h};
     SDL_RenderCopy(renderer, game->brick, NULL, &ledgerect);
-    //SDL_Rect ledgerect1 = {game->ledges[1].x, game->ledges[1].y, game->ledges[1].w, game->ledges[1].h};
-    //SDL_RenderCopy(renderer, game->brick, NULL, &ledgerect1);
     SDL_Rect ledgerect2 = {game->ledges[2].x, game->ledges[2].y, game->ledges[2].w, game->ledges[2].h};
     SDL_RenderCopy(renderer, game->brick, NULL, &ledgerect2);
-    //SDL_Rect ledgerect3 = {game->ledges[3].x, game->ledges[3].y, game->ledges[3].w, game->ledges[3].h};
-    //SDL_RenderCopy(renderer, game->brick, NULL, &ledgerect3);
 
 
     int index = game->man.animFrame;
@@ -764,13 +834,14 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     //IFRIT
     SDL_Rect birdRect = {game->birds.x, game->birds.y, 101, 210};
     SDL_RenderCopy(renderer, game->bird[game->birds.enemyFrame], NULL, &birdRect);
-
+    }
 
     SDL_RenderPresent(renderer);
 
 }
 
 int main(int argc, char *argv[]) {
+    int done = 0;
     GameState gameState;
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -791,7 +862,7 @@ int main(int argc, char *argv[]) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     gameState.renderer = renderer;
 
-    int done = 0;
+    TTF_Init();//init font
 
     loadGame(&gameState);
 
@@ -802,14 +873,20 @@ int main(int argc, char *argv[]) {
         collisionDetect(&gameState);
         doRender(renderer, &gameState);
     }
-    SDL_DestroyTexture(gameState.brick);
 
+    if(gameState.label != NULL)
+    {
+        SDL_DestroyTexture(gameState.label);
+    }
+    SDL_DestroyTexture(gameState.brick);
     SDL_DestroyTexture(gameState.manFrames[0]);
     SDL_DestroyTexture(gameState.bg);
     SDL_DestroyTexture(gameState.bird);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    TTF_CloseFont(gameState.font);
     IMG_Quit();
     SDL_Quit();
+    TTF_Quit();
     return 0;
 }
