@@ -2,14 +2,63 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="status.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="352" topLine="13" />
+			<Cursor1 position="520" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="9577" topLine="220" />
+			<Cursor1 position="21364" topLine="549" />
+		</Cursor>
+		<Folding>
+			<Collapse line="14" />
+			<Collapse line="365" />
+			<Collapse line="369" />
+			<Collapse line="373" />
+			<Collapse line="377" />
+			<Collapse line="381" />
+			<Collapse line="385" />
+			<Collapse line="393" />
+			<Collapse line="395" />
+			<Collapse line="397" />
+			<Collapse line="401" />
+			<Collapse line="405" />
+			<Collapse line="409" />
+			<Collapse line="413" />
+			<Collapse line="417" />
+			<Collapse line="421" />
+			<Collapse line="425" />
+			<Collapse line="433" />
+			<Collapse line="437" />
+			<Collapse line="441" />
+			<Collapse line="445" />
+			<Collapse line="449" />
+			<Collapse line="453" />
+			<Collapse line="463" />
+			<Collapse line="465" />
+			<Collapse line="467" />
+			<Collapse line="471" />
+			<Collapse line="475" />
+			<Collapse line="479" />
+			<Collapse line="483" />
+			<Collapse line="487" />
+			<Collapse line="493" />
+			<Collapse line="528" />
+			<Collapse line="530" />
+			<Collapse line="553" />
+			<Collapse line="557" />
+			<Collapse line="592" />
+		</Folding>
+	</File>
+	<File name="main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="156" topLine="17" />
+		</Cursor>
+	</File>
+	<File name="status.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="179" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

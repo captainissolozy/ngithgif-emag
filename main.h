@@ -4,6 +4,7 @@
 #define STATUS_STATE_LIVES 0
 #define STATUS_STATE_GAME 1
 #define STATUS_STATE_GAMEOVER 8
+#define MAX_BEAM 300
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -31,8 +32,15 @@ typedef struct
 
 typedef struct
 {
-    int x, y, w, h;
-}Attack;
+    int x, y;
+    long mm;
+    int normatk;
+}Attack1;
+
+typedef struct
+{
+    float x, y, dx;
+}Mattack1;
 
 typedef struct
 {
@@ -42,7 +50,8 @@ typedef struct
 typedef struct
 {
     Man man;
-    Attack attacks[3];
+    Attack1 attacks[2];
+    Mattack1 mattack;
 
     Bird birds;
     Ledge ledges[4];
@@ -53,7 +62,7 @@ typedef struct
     SDL_Texture *manFrames[46];
     SDL_Texture *brick;
     SDL_Texture *thunder[3];
-    SDL_Texture *beam[2];
+    SDL_Texture *beam[1];
     SDL_Texture *strike[2];
     SDL_Texture *railgun[4];
     SDL_Texture *label;
