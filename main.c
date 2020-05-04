@@ -367,7 +367,7 @@ void process(GameState *game)
         check = 1;
     }
 
-    if(game->statusState == STATUS_STATE_GAME && (game->man.isDead <= 2000 || game->birds.isDead <= 5000))
+    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 2000)
     {
         Man *man = &game->man;
         Bird *birds = &game->birds;
@@ -780,16 +780,15 @@ void collisionDetect(GameState *game)
     if(collide2d(game->man.x, game->man.y, game->attacks[1].x, game->attacks[1].y, 41, 111, 75, 85))
     {
         game->man.isDead++;
+        printf("%d \n", game->man.isDead);
     }
     if(collide2d(game->man.x, game->man.y, game->birds.x-game->attacks2[0].dx, game->birds.y+(40+game->attacks2[0].y), 41, 111, 200, 71) && game->time > 250&&game->statusState == STATUS_STATE_GAME)
     {
         game->man.isDead++;
-        printf("   %d\n", game->man.isDead);
     }
     if(collide2d(game->man.x, game->man.y, game->birds.x+game->attacks2[0].dx, game->birds.y+(40), 41, 111, 200, 71) && game->time > 250 && game->statusState == STATUS_STATE_GAME)
     {
         game->man.isDead++;
-        printf("%d\n", game->man.isDead);
     }
 
 
