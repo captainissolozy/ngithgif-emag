@@ -36,6 +36,11 @@ typedef struct
     long mm;
     int normatk;
 }Attack1;
+typedef struct
+{
+    int x, y, dx;
+    int atkFrame;
+}Attack2;
 
 typedef struct
 {
@@ -51,12 +56,14 @@ typedef struct
 {
     Man man;
     Attack1 attacks[2];
+    Attack2 attacks2[2];
     Mattack1 mattack;
 
     Bird birds;
     Ledge ledges[4];
 
     SDL_Texture *attack[2];
+    SDL_Texture *fire[6];
     SDL_Texture *bird[17];
     SDL_Texture *bg;
     SDL_Texture *manFrames[46];
@@ -66,7 +73,7 @@ typedef struct
     SDL_Texture *strike[2];
     SDL_Texture *railgun[4];
     SDL_Texture *label;
-    int labelW, labelH;
+    int labelW, labelH, rota;
     int countani;
 
     TTF_Font *font;

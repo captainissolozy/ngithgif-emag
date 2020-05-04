@@ -229,6 +229,31 @@ void loadGame(GameState *game)
     game->attack[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("fire1.png");
+    game->fire[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    if(surface == NULL)
+    {
+        printf("Suck");
+        SDL_Quit();
+        exit(1);
+    }
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("fire2.png");
+    game->fire[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("fire3.png");
+    game->fire[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("fire4.png");
+    game->fire[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("fire5.png");
+    game->fire[4] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("fire6.png");
+    game->fire[5] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
 
     surface = IMG_Load("BG.png");
     game->bg = SDL_CreateTextureFromSurface(game->renderer, surface);
@@ -269,6 +294,8 @@ void loadGame(GameState *game)
     game->attacks[1].y = 720;
     game->attacks[0].normatk = 0;
     game->attacks[1].normatk = 0;
+    game->attacks2[0].dx = 190;
+    game->rota = 0;
 
     init_status_lives(game);
 
@@ -340,7 +367,7 @@ void process(GameState *game)
         check = 1;
     }
 
-    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 2000)
+    if(game->statusState == STATUS_STATE_GAME && (game->man.isDead <= 2000 || game->birds.isDead <= 5000))
     {
         Man *man = &game->man;
         Bird *birds = &game->birds;
@@ -529,7 +556,7 @@ void process(GameState *game)
             else
             {man->animFrame = 6;}
         }
-    }else if(man->dy != 0 && man->action == 0)
+        }else if(man->dy != 0 && man->action == 0)
         {
         if(game->time % 45 == 0)
         {
@@ -552,12 +579,20 @@ void process(GameState *game)
             else
             {man->animFrame = 14;}
         }
-    }
+        }
 
+        //reset game time
         if(game->time > 1005)
         {
-        game->time = 1;
-    }
+            SDL_DestroyTexture(game->attack[0]);
+            SDL_DestroyTexture(game->attack[1]);
+            for(int i = 0; i<6;i++)
+            {
+                SDL_DestroyTexture(game->fire[i]);
+            }
+            game->time = 1;
+            game->rota = 0;
+        }
         if(game->time % 1000 == 0)
         {
         game->birds.x = (random()%900)+350;
@@ -663,12 +698,35 @@ void process(GameState *game)
             game->attacks[1].x = game->man.x-random()%150-100;
             game->attacks[1].y = game->man.y;
         }else if(game->time < 480)
-    {
-        game->attacks[0].x = 1440;
-        game->attacks[0].y = 720;
-        game->attacks[1].x = 1440;
-        game->attacks[1].y = 720;
-    }
+        {
+            game->attacks[0].x = 1440;
+            game->attacks[0].y = 720;
+            game->attacks[1].x = 1440;
+            game->attacks[1].y = 720;
+        }
+        if(game->time%50 == 0)
+        {
+            if(game->attacks2[0].atkFrame == 0)
+            {
+                game->attacks2[0].atkFrame = 1;
+            }else if(game->attacks2[0].atkFrame == 1)
+            {
+                game->attacks2[0].atkFrame = 2;
+            }else if(game->attacks2[0].atkFrame == 2)
+            {
+                game->attacks2[0].atkFrame = 3;
+            }else if(game->attacks2[0].atkFrame == 3)
+            {
+                game->attacks2[0].atkFrame = 4;
+            }else if(game->attacks2[0].atkFrame == 4)
+            {
+                game->attacks2[0].atkFrame = 5;
+            }
+            else
+            {
+                game->attacks2[0].atkFrame = 0;
+            }
+        }
     }
     else if(game->man.isDead > 2000 && game->countani == 0)
     {
@@ -717,10 +775,18 @@ void collisionDetect(GameState *game)
     if(collide2d(game->man.x, game->man.y, game->attacks[0].x, game->attacks[0].y, 41, 111, 75, 85))
     {
         game->man.isDead++;
-        printf("%d\n", game->man.isDead);
     }
 
     if(collide2d(game->man.x, game->man.y, game->attacks[1].x, game->attacks[1].y, 41, 111, 75, 85))
+    {
+        game->man.isDead++;
+    }
+    if(collide2d(game->man.x, game->man.y, game->birds.x-game->attacks2[0].dx, game->birds.y+(40+game->attacks2[0].y), 41, 111, 200, 71) && game->time > 250&&game->statusState == STATUS_STATE_GAME)
+    {
+        game->man.isDead++;
+        printf("   %d\n", game->man.isDead);
+    }
+    if(collide2d(game->man.x, game->man.y, game->birds.x+game->attacks2[0].dx, game->birds.y+(40), 41, 111, 200, 71) && game->time > 250 && game->statusState == STATUS_STATE_GAME)
     {
         game->man.isDead++;
         printf("%d\n", game->man.isDead);
@@ -885,7 +951,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     {
         draw_status_lives(game);
     }else if(game->statusState == STATUS_STATE_GAME)
-    {
+{
     SDL_RenderClear(renderer);
     //bacgGround
     SDL_Rect bgRect = {0, 0, 1440, 720};
@@ -914,7 +980,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     else
     {
         i = 1;
-        j= 1;
+        j = 1;
     }
     //Character
     SDL_Rect rect1 = {game->man.x, game->man.y, i*45, j*180};
@@ -929,11 +995,13 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     //attack render
     if(game->time > 550 && game->time <= 1000)
     {
+        game->rota+=8;
+        game->rota = game->rota%360;
         SDL_Rect Rectatk1 = {game->attacks[0].x, game->attacks[0].y, 75, 85};
-        SDL_RenderCopy(renderer, game->attack[game->attacks[1].normatk], NULL, &Rectatk1);
+        SDL_RenderCopyEx(renderer, game->attack[game->attacks[1].normatk], NULL, &Rectatk1, game->rota, NULL, 1);
 
         SDL_Rect Rectatk2 = {game->attacks[1].x, game->attacks[1].y, 75, 85};
-        SDL_RenderCopy(renderer, game->attack[game->attacks[0].normatk], NULL, &Rectatk2);
+        SDL_RenderCopyEx(renderer, game->attack[game->attacks[0].normatk], NULL, &Rectatk2, -game->rota, NULL, 0);
         if(game->time >= 780)
         {
             game->attacks[0].x++;
@@ -952,9 +1020,28 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         {
             game->attacks[1].y++;
         }
+    }
 
+    if(game->time <= 950 && game->time >= 250)
+    {
+        SDL_Rect Rectatk3 = {game->birds.x-game->attacks2[0].dx, game->birds.y+(40+game->attacks2[0].y), 250, 71};
+        SDL_RenderCopyEx(renderer, game->fire[game->attacks2[0].atkFrame], NULL, &Rectatk3, 0, NULL, 0);
+        SDL_Rect Rectatk4 = {game->birds.x+game->attacks2[0].dx, game->birds.y+(40), 250, 71};
+        SDL_RenderCopyEx(renderer, game->fire[game->attacks2[0].atkFrame], NULL, &Rectatk4, 0, NULL, 1);
+        game->attacks2[0].dx +=2;
+        if(game->birds.y +(40+game->attacks2[0].y) > game->man.y)
+        {
+            game->attacks2[0].y-=1;
+        }else if(game->birds.y +(40+game->attacks2[0].y) < game->man.y)
+        {
+            game->attacks2[0].y+=1;
+        }
+    }else if(game->time == 1000)
+    {
+        game->attacks2[0].dx = 190;
+        game->attacks2[0].y = 0;
     }
-    }
+}
 
     SDL_RenderPresent(renderer);
 }
