@@ -164,9 +164,46 @@ void loadGame(GameState *game)
 
 
     surface = IMG_Load("beam.png");
-    game->beam[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    game->railgun[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("t1.png");
+    game->strike[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("t2.png");
+    game->strike[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("t3.png");
+    game->strike[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("t4.png");
+    game->strike[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("t5.png");
+    game->strike[4] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("t6.png");
+    game->strike[5] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("q1.png");
+    game->beam[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("q2.png");
+    game->beam[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("q3.png");
+    game->beam[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("q4.png");
+    game->beam[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("q5.png");
+    game->beam[4] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
+    surface = IMG_Load("q6.png");
+    game->beam[5] = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
 
 
 
@@ -273,7 +310,6 @@ void loadGame(GameState *game)
     }
 
     game->label = NULL;
-
     game->man.x = 320-40;
     game->man.y = 240-40;
     game->man.dx = 0;
@@ -282,11 +318,16 @@ void loadGame(GameState *game)
     game->man.animFrame = 7;
     game->man.facingLeft = 1;
     game->birds.enemyFrame = 0;
+    game->birds.isDead = 0;
     game->man.action = 0;
     game->man.lives = 8;
     game->man.isDead = 0;
     game->statusState = STATUS_STATE_LIVES;
     game->countani = 0;
+    game->mattack2[0].at1Frame = 0;
+    game->mattack2[1].at1Frame = 0;
+    game->mattack2[2].at1Frame = 0;
+    game->mattack3.at2Frame = 0;
 
     game->attacks[0].x = 1440;
     game->attacks[0].y = 720;
@@ -324,36 +365,7 @@ void loadGame(GameState *game)
 
 
 }
-Mattack1 *beams[MAX_BEAM] = { NULL };
-void addBeam(float x, float y, float dx)
-{
-    int found = -1;
-    for(int i = 0; i < MAX_BEAM; i++)
-    {
-        if(beams[i] == NULL)
-        {
-            found = i;
-            break;
-        }
-    }
-    if(found >= 0)
-    {
-        int i = found;
-        beams[i] = malloc(sizeof(Mattack1));
-        beams[i]->x = x;
-        beams[i]->y = y;
-        beams[i]->dx = dx;
-    }
-}
 
-void removeBeam(int i)
-{
-    if(beams[i])
-    {
-        free(beams[i]);
-        beams[i] = NULL;
-    }
-}
 void process(GameState *game)
 {
     game->time++;
@@ -367,7 +379,7 @@ void process(GameState *game)
         check = 1;
     }
 
-    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 2000)
+    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 2000 && game->birds.isDead <= 3500)
     {
         Man *man = &game->man;
         Bird *birds = &game->birds;
@@ -580,6 +592,41 @@ void process(GameState *game)
             {man->animFrame = 14;}
         }
         }
+        if(game->time % 50 == 0)
+        {
+            if(game->mattack2[0].at1Frame == 0)
+            {
+                game->mattack2[0].at1Frame = 1;
+                game->mattack2[1].at1Frame = 1;
+                game->mattack2[2].at1Frame = 1;
+            }else if(game->mattack2[0].at1Frame == 1)
+            {
+                game->mattack2[0].at1Frame = 2;
+                game->mattack2[1].at1Frame = 2;
+                game->mattack2[2].at1Frame = 2;
+            }else if(game->mattack2[0].at1Frame == 2)
+            {
+                game->mattack2[0].at1Frame = 3;
+                game->mattack2[1].at1Frame = 3;
+                game->mattack2[2].at1Frame = 3;
+            }else if(game->mattack2[0].at1Frame == 3)
+            {
+                game->mattack2[0].at1Frame = 4;
+                game->mattack2[1].at1Frame = 4;
+                game->mattack2[2].at1Frame = 4;
+            }else if(game->mattack2[0].at1Frame == 4)
+            {
+                game->mattack2[0].at1Frame = 5;
+                game->mattack2[1].at1Frame = 5;
+                game->mattack2[2].at1Frame = 5;
+            }
+            else
+            {
+                game->mattack2[0].at1Frame = 0;
+                game->mattack2[1].at1Frame = 0;
+                game->mattack2[2].at1Frame = 0;
+            }
+        }
 
         //reset game time
         if(game->time > 1005)
@@ -589,7 +636,10 @@ void process(GameState *game)
             for(int i = 0; i<6;i++)
             {
                 SDL_DestroyTexture(game->fire[i]);
+                SDL_DestroyTexture(game->beam[i]);
+                SDL_DestroyTexture(game->strike[i]);
             }
+            game->mattack.dx = 0;
             game->time = 1;
             game->rota = 0;
         }
@@ -747,12 +797,40 @@ void process(GameState *game)
             {
                 man->animFrame = 45;
                 game->countani = 1;
+                game->statusState = STATUS_STATE_GAMEOVER;
             }
             else
             {
                 man->animFrame = 42;
             }
 
+        }
+    }else if(game->birds.isDead > 3500 && game->countani == 0)
+    {
+        if(game->time % 50 == 0)
+        {
+            if(game->birds.enemyFrame == 12)
+            {
+                game->birds.enemyFrame = 13;
+            }
+            else if(game->birds.enemyFrame == 13)
+            {
+                game->birds.enemyFrame = 14;
+            }
+            else if(game->birds.enemyFrame == 14)
+            {
+                game->birds.enemyFrame = 15;
+            }
+            else if(game->birds.enemyFrame == 15)
+            {
+                game->birds.enemyFrame = 16;
+                game->countani = 1;
+                game->statusState = STATUS_STATE_GAMEOVER;
+            }
+            else
+            {
+                game->birds.enemyFrame = 12;
+            }
         }
     }
 }
@@ -780,15 +858,42 @@ void collisionDetect(GameState *game)
     if(collide2d(game->man.x, game->man.y, game->attacks[1].x, game->attacks[1].y, 41, 111, 75, 85))
     {
         game->man.isDead++;
-        printf("%d \n", game->man.isDead);
     }
     if(collide2d(game->man.x, game->man.y, game->birds.x-game->attacks2[0].dx, game->birds.y+(40+game->attacks2[0].y), 41, 111, 200, 71) && game->time > 250&&game->statusState == STATUS_STATE_GAME)
     {
-        game->man.isDead++;
+        game->man.isDead+=2;
     }
     if(collide2d(game->man.x, game->man.y, game->birds.x+game->attacks2[0].dx, game->birds.y+(40), 41, 111, 200, 71) && game->time > 250 && game->statusState == STATUS_STATE_GAME)
     {
-        game->man.isDead++;
+        game->man.isDead+=2;
+    }
+
+    //character attack collision
+    if(collide2d(game->birds.x, game->birds.y, game->man.x+100, game->man.y+15, 60, 110, 1400, 80) && game->man.action == 1 && game->man.facingLeft == 1)
+    {
+        game->birds.isDead++;
+    }
+    if(collide2d(game->birds.x, game->birds.y, game->man.x-1400, game->man.y+15, 60, 110, 1400, 80) && game->man.action == 1 && game->man.facingLeft == 0)
+    {
+        game->birds.isDead++;
+    }
+    if(collide2d(game->birds.x, game->birds.y, game->man.x+400, 0, 61, 111, 50, 600) && game->man.action == 4 && game->man.facingLeft == 1)
+    {
+        game->birds.isDead++;
+    }
+    if(collide2d(game->birds.x, game->birds.y, game->man.x-400, 0, 61, 111, 50, 600) && game->man.action == 4 && game->man.facingLeft == 0)
+    {
+        game->birds.isDead++;
+    }
+    if(collide2d(game->birds.x, game->birds.y, game->man.x+400, 0, 61, 111, 240, 600) && game->man.action == 2 && game->man.facingLeft == 1)
+    {
+        game->birds.isDead+=2;
+        printf("%d \n", game->birds.isDead);
+    }
+    if(collide2d(game->birds.x, game->birds.y, game->man.x-400, 0, 61, 111, 240, 600) && game->man.action == 2 && game->man.facingLeft == 0)
+    {
+        game->birds.isDead+=2;
+        printf("%d \n", game->birds.isDead);
     }
 
 
@@ -1040,6 +1145,45 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         game->attacks2[0].dx = 190;
         game->attacks2[0].y = 0;
     }
+
+    //characterattack
+    if(game->man.action == 1 && game->man.facingLeft ==1)
+    {
+        SDL_Rect rectatk1 = {game->man.x+100, game->man.y+15, 1400, 30};
+        SDL_RenderCopyEx(renderer, game->beam[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 0);
+    }else if(game->man.action == 1 && game->man.facingLeft ==0)
+    {
+        SDL_Rect rectatk1 = {game->man.x-1400, game->man.y+15, 1400, 30};
+        SDL_RenderCopyEx(renderer, game->beam[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 1);
+    }
+
+    if(game->man.action == 4 && game->man.facingLeft ==1)
+    {
+        SDL_Rect rectatk1 = {game->man.x+400, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 0);
+    }else if(game->man.action == 4 && game->man.facingLeft ==0)
+    {
+        SDL_Rect rectatk1 = {game->man.x-400, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 0);
+    }
+    if(game->man.action == 2 && game->man.facingLeft ==1)
+    {
+        SDL_Rect rectatk1 = {game->man.x+400, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 0);
+        SDL_Rect rectatk3 = {game->man.x+480, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk3, 0, NULL, 0);
+        SDL_Rect rectatk4 = {game->man.x+560, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk4, 0, NULL, 0);
+    }else if(game->man.action == 2 && game->man.facingLeft ==0)
+    {
+        SDL_Rect rectatk1 = {game->man.x-400, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk1, 0, NULL, 0);
+        SDL_Rect rectatk3 = {game->man.x-480, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk3, 0, NULL, 0);
+        SDL_Rect rectatk4 = {game->man.x-560, 0, 50, 600};
+        SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk4, 0, NULL, 0);
+
+    }
 }
 
     SDL_RenderPresent(renderer);
@@ -1051,7 +1195,6 @@ int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    Man man;
 
     SDL_Init(SDL_INIT_VIDEO);
     srandom((int)time(NULL));

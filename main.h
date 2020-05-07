@@ -45,7 +45,19 @@ typedef struct
 typedef struct
 {
     float x, y, dx;
+    int atFrame;
 }Mattack1;
+typedef struct
+{
+    float x, y;
+    int at1Frame;
+}Mattack2;
+typedef struct
+{
+    float x, y, dx;
+    int at2Frame;
+}Mattack3;
+
 
 typedef struct
 {
@@ -58,6 +70,8 @@ typedef struct
     Attack1 attacks[2];
     Attack2 attacks2[2];
     Mattack1 mattack;
+    Mattack2 mattack2[3];
+    Mattack3 mattack3;
 
     Bird birds;
     Ledge ledges[4];
@@ -68,10 +82,9 @@ typedef struct
     SDL_Texture *bg;
     SDL_Texture *manFrames[46];
     SDL_Texture *brick;
-    SDL_Texture *thunder[3];
-    SDL_Texture *beam[1];
-    SDL_Texture *strike[2];
-    SDL_Texture *railgun[4];
+    SDL_Texture *beam[6];
+    SDL_Texture *strike[6];
+    SDL_Texture *railgun[1];
     SDL_Texture *label;
     int labelW, labelH, rota;
     int countani;
