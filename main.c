@@ -798,6 +798,7 @@ void process(GameState *game)
                 man->animFrame = 45;
                 game->countani = 1;
                 game->statusState = STATUS_STATE_GAMEOVER;
+                init_status_die(game);
             }
             else
             {
@@ -826,6 +827,7 @@ void process(GameState *game)
                 game->birds.enemyFrame = 16;
                 game->countani = 1;
                 game->statusState = STATUS_STATE_GAMEOVER;
+                init_status_win(game);
             }
             else
             {
@@ -885,12 +887,12 @@ void collisionDetect(GameState *game)
     {
         game->birds.isDead++;
     }
-    if(collide2d(game->birds.x, game->birds.y, game->man.x+400, 0, 61, 111, 240, 600) && game->man.action == 2 && game->man.facingLeft == 1)
+    if(collide2d(game->birds.x, game->birds.y, game->man.x+400, 0, 61, 111, 210, 600) && game->man.action == 2 && game->man.facingLeft == 1)
     {
         game->birds.isDead+=2;
         printf("%d \n", game->birds.isDead);
     }
-    if(collide2d(game->birds.x, game->birds.y, game->man.x-400, 0, 61, 111, 240, 600) && game->man.action == 2 && game->man.facingLeft == 0)
+    if(collide2d(game->birds.x, game->birds.y, game->man.x-400, 0, 61, 111, 210, 600) && game->man.action == 2 && game->man.facingLeft == 0)
     {
         game->birds.isDead+=2;
         printf("%d \n", game->birds.isDead);
@@ -1184,7 +1186,28 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk4, 0, NULL, 0);
 
     }
-}
+}else if(game->statusState == STATUS_STATE_GAMEOVER && game->man.isDead > 2000 && game->countani == 1)
+    {
+        draw_status_die(game);
+        for(int i = 0; i < 6; i++)
+        {
+            SDL_DestroyTexture(game->fire[i]);
+            SDL_DestroyTexture(game->attack[i]);
+            SDL_DestroyTexture(game->beam[i]);
+            SDL_DestroyTexture(game->strike[i]);
+        }
+    }
+    else if(game->statusState == STATUS_STATE_GAMEOVER && game->birds.isDead > 3500 && game->countani == 1)
+    {
+        draw_status_die(game);
+        for(int i = 0; i < 6; i++)
+        {
+            SDL_DestroyTexture(game->fire[i]);
+            SDL_DestroyTexture(game->attack[i]);
+            SDL_DestroyTexture(game->beam[i]);
+            SDL_DestroyTexture(game->strike[i]);
+        }
+    }
 
     SDL_RenderPresent(renderer);
 }
