@@ -16,7 +16,7 @@
 
 1588847927 /home/ccap/Desktop/FINALGAME/status.h
 
-1588849839 source:/home/ccap/Desktop/FINALGAME/status.c
+1588851931 source:/home/ccap/Desktop/FINALGAME/status.c
 	<stdio.h>
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>

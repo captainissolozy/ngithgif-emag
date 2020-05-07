@@ -379,7 +379,7 @@ void process(GameState *game)
         check = 1;
     }
 
-    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 2000 && game->birds.isDead <= 3500)
+    if(game->statusState == STATUS_STATE_GAME && game->man.isDead <= 1500 && game->birds.isDead <= 5000)
     {
         Man *man = &game->man;
         Bird *birds = &game->birds;
@@ -778,7 +778,7 @@ void process(GameState *game)
             }
         }
     }
-    else if(game->man.isDead > 2000 && game->countani == 0)
+    else if(game->man.isDead > 1500 && game->countani == 0)
     {
         Man *man = &game->man;
         man->x += man->dx;
@@ -805,7 +805,7 @@ void process(GameState *game)
             }
 
         }
-    }else if(game->birds.isDead > 3500 && game->countani == 0)
+    }else if(game->birds.isDead > 5000 && game->countani == 0)
     {
         if(game->time % 50 == 0)
         {
@@ -888,12 +888,10 @@ void collisionDetect(GameState *game)
     if(collide2d(game->birds.x, game->birds.y, game->man.x+400, 0, 61, 111, 210, 600) && game->man.action == 2 && game->man.facingLeft == 1)
     {
         game->birds.isDead+=2;
-        printf("%d \n", game->birds.isDead);
     }
     if(collide2d(game->birds.x, game->birds.y, game->man.x-400, 0, 61, 111, 210, 600) && game->man.action == 2 && game->man.facingLeft == 0)
     {
         game->birds.isDead+=2;
-        printf("%d \n", game->birds.isDead);
     }
 
 
@@ -1184,7 +1182,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
         SDL_RenderCopyEx(renderer, game->strike[game->mattack2[0].at1Frame], NULL, &rectatk4, 0, NULL, 0);
 
     }
-}else if(game->statusState == STATUS_STATE_GAMEOVER && game->man.isDead > 2000 && game->countani == 1)
+}else if(game->statusState == STATUS_STATE_GAMEOVER && game->man.isDead > 1500 && game->countani == 1)
     {
         init_status_die(game);
         draw_status_die(game);
@@ -1196,7 +1194,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
             SDL_DestroyTexture(game->strike[i]);
         }
     }
-    else if(game->statusState == STATUS_STATE_GAMEOVER && game->birds.isDead > 3500 && game->countani == 1)
+    else if(game->statusState == STATUS_STATE_GAMEOVER && game->birds.isDead > 5000 && game->countani == 1)
     {
         init_status_win(game);
         draw_status_die(game);
