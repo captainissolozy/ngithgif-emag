@@ -49,7 +49,7 @@ void draw_status_die(GameState *game)
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
     SDL_RenderClear(game->renderer);
-
+    SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, 255);
     SDL_Rect textRect = {720-game->labelW/2, 360-game->labelH, game->labelW, game->labelH};
     SDL_RenderCopy(game->renderer, game->label, NULL, &textRect);
 }
@@ -58,7 +58,7 @@ void draw_status_win(GameState *game)
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
     SDL_RenderClear(game->renderer);
-
+    SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, 255);
     SDL_Rect textRect = {720-game->labelW/2, 360-game->labelH, game->labelW, game->labelH};
     SDL_RenderCopy(game->renderer, game->label, NULL, &textRect);
 }

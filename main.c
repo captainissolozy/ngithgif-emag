@@ -798,7 +798,6 @@ void process(GameState *game)
                 man->animFrame = 45;
                 game->countani = 1;
                 game->statusState = STATUS_STATE_GAMEOVER;
-                init_status_die(game);
             }
             else
             {
@@ -827,7 +826,6 @@ void process(GameState *game)
                 game->birds.enemyFrame = 16;
                 game->countani = 1;
                 game->statusState = STATUS_STATE_GAMEOVER;
-                init_status_win(game);
             }
             else
             {
@@ -1188,6 +1186,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     }
 }else if(game->statusState == STATUS_STATE_GAMEOVER && game->man.isDead > 2000 && game->countani == 1)
     {
+        init_status_die(game);
         draw_status_die(game);
         for(int i = 0; i < 6; i++)
         {
@@ -1199,6 +1198,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
     }
     else if(game->statusState == STATUS_STATE_GAMEOVER && game->birds.isDead > 3500 && game->countani == 1)
     {
+        init_status_win(game);
         draw_status_die(game);
         for(int i = 0; i < 6; i++)
         {
