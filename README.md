@@ -8,10 +8,10 @@ RUN FINALGAME.exe with complier and put the SDL runtime library where the projec
 
 
 # Member:
-1. 62070022
-2. 62070071
-3. 62070072
-4. 62070117
+1. 62070022 นายคณิน เชาวณัฏ
+2. 62070071 นายเดชาธร คำพิมพ์
+3. 62070072 นายทวีวัฒน์ ศรีเมฆ
+4. 62070117 นายปวเรศ นุตาคม
 
 
 # Abstract
