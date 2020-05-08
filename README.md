@@ -7,10 +7,18 @@ RUN FINALGAME.exe with complier and put the SDL runtime library where the projec
 **//Publish by 62070022 khanin chaowanat
 
 
-**//Clip Project
+# Member:
+1. 62070022
+2. 62070071
+3. 62070072
+4. 62070117
+
+
+# Clip Project:
 https://www.youtube.com/watch?v=vG3hQu5hrZs
+![video copro](https://www.youtube.com/watch?v=vG3hQu5hrZs)
 
 
-# Post Project
+# Post Project:
 - https://drive.google.com/file/d/1OpJvO89_EZHZb2iTvYt_XGWW44LTZEv6/view?usp=sharing
 ![poster compro](https://i.imgur.com/vxeQbS0.jpg)
