@@ -24,9 +24,9 @@ RUN FINALGAME.exe with complier and put the SDL runtime library where the projec
 
 
 # Clip Project:
-- https://www.youtube.com/watch?v=vG3hQu5hrZs
+- https://www.youtube.com/watch?v=d5AZeTh39mg&t=57s
 
-[![video copro](https://i.imgur.com/583z5Df.jpg)](https://www.youtube.com/watch?v=vG3hQu5hrZs)
+[![video copro](https://i.imgur.com/583z5Df.jpg)](https://www.youtube.com/watch?v=d5AZeTh39mg&t=57s)
 
 
 # Post Project:
